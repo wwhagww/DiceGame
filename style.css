@@ -1,0 +1,58 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  #score-board {
+    width: 300px;
+    margin: 10px auto;
+    border-collapse: collapse;
+  }
+  #score-board td {
+    border: 1px solid black;
+    padding: 10px;
+  }
+  .score {
+    color: gray;
+  }
+  .score:hover {
+    background-color: lightgray;
+  }
+  .filled {
+    color: black;
+    background-color: lightgoldenrodyellow;
+  }
+  #dice-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  .dice {
+    margin: 10px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    
+    line-height: 50px;
+  }
+  .dice:hover {
+    border: 1px dotted black;
+  }
+  .fix {
+    background-color: lightgray;
+  }
+  #roll-btn {
+    margin: 5px;
+    padding: 10px;
+  }
+  #ranking {
+    border: 1px dotted black;
+  }
+  .rank-list {
+    opacity: 0%;
+  }
+  #ranking:hover > .rank-list {
+    opacity: 100%;
+  }
+  
