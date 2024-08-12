@@ -12,3 +12,4 @@ https://wwhagww.github.io/DiceGame/
 
 **참고 중인 링크들**
 - https://reactjs-kr.firebaseapp.com/docs/thinking-in-react.html
+- https://www.philly.im/blog/setting-up-react-project-from-scratch
