@@ -12,4 +12,6 @@ https://wwhagww.github.io/DiceGame/
 
 **참고 중인 링크들**
 - https://reactjs-kr.firebaseapp.com/docs/thinking-in-react.html
-- https://www.philly.im/blog/setting-up-react-project-from-scratch
+- 리액트 https://www.philly.im/blog/setting-up-react-project-from-scratch
+- 웹팩 https://yamoo9.gitbook.io/webpack/webpack/config-webpack-dev-environment/install-webpack
+- 바벨 https://yamoo9.gitbook.io/webpack/babel/babel-cli-configure
