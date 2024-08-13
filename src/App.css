@@ -1,0 +1,26 @@
+.App {
+    margin: 0;
+    box-sizing: border-box;
+    text-align: center;
+}
+.dices {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  .dice {
+    margin: 10px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    
+    line-height: 50px;
+    font-size: 20px;
+  }
+  .dice:hover {
+    border: 1px dotted black;
+  }
+  .fixed {
+    background-color: lightgray;
+  }
