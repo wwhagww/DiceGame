@@ -11,7 +11,5 @@ UI를 컴포넌트로 분리하고, state를 적절히 사용하고, react에서
 https://wwhagww.github.io/DiceGame/
 
 **참고 중인 링크들**
-- https://reactjs-kr.firebaseapp.com/docs/thinking-in-react.html
-- 리액트 https://www.philly.im/blog/setting-up-react-project-from-scratch
-- 웹팩 https://yamoo9.gitbook.io/webpack/webpack/config-webpack-dev-environment/install-webpack
-- 바벨 https://yamoo9.gitbook.io/webpack/babel/babel-cli-configure
+- 리액트 https://reactjs-kr.firebaseapp.com/
+- 웹팩, 바벨 https://yamoo9.gitbook.io/webpack
