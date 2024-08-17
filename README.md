@@ -15,3 +15,4 @@ https://wwhagww.github.io/DiceGame/
 - 웹팩, 바벨 https://yamoo9.gitbook.io/webpack
 - 깃 https://git-scm.com/book/ko/v2/Git-%EB%B8%8C%EB%9E%9C%EC%B9%98-Rebase-%ED%95%98%EA%B8%B0
 - css webpack https://www.theok.dev/posts/webpack
+- 그리드 https://developer.mozilla.org/ko/docs/Web/CSS/CSS_grid_layout
