@@ -24,7 +24,7 @@ class DiceSection extends React.Component {
         <div className="dices">
           {diceList}
         </div>
-        <button onClick={this.props.roll}>주사위 굴리기</button>
+        <button class="roll-button" onClick={this.props.roll}>주사위 굴리기</button>
       </div>
     );
   }
@@ -32,14 +32,41 @@ class DiceSection extends React.Component {
 
 function TurnIndicator(props) {
   return (
-    <h2 className="turn-indicator">{props.turn}번째 턴</h2>
+    <h1 className="turn-indicator">{props.turn}번째 턴</h1>
   );
+}
+
+function ScoreCell(props) {
+  const className = `score-cell ${props.filled ? "filled" : ""}`;
+  return (
+    <div className={className} onClick={props.fill}>
+      <div className="name">{props.name}</div>
+      <div className="score">{props.score}</div>
+    </div>
+  );
+}
+
+class ScoreSection extends React.Component {
+  render() {
+    return <div className="score-section">
+      {this.props.rulls.map(({name, calc}, idx) => {
+        return <ScoreCell
+        key={name}
+        name={name}
+        score={this.props.scores[idx] ?? (this.props.dices[0] !== null ? calc(this.props.dices) : "")}
+        fill={() => this.props.fill(idx)}
+        filled={this.props.scores[idx] !== null}
+        />
+      })}
+    </div>
+  }
 }
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      scores: Array(12).fill(null),
       dices: Array(5).fill(null),
       turn: 1,
       rollCount: 0,
@@ -47,32 +74,93 @@ class Game extends React.Component {
     };
     this.rollDice = this.rollDice.bind(this);
     this.fixDice = this.fixDice.bind(this);
+    this.fillScore = this.fillScore.bind(this);
+    this.RULLS = [
+      { name: "Ones",
+        calc: (dices) => countNums(dices,6)[1] * 1
+      },
+      { name: "Twos",
+        calc: (dices) => countNums(dices,6)[2] * 2
+      },
+      { name: "Threes",
+        calc: (dices) => countNums(dices,6)[3] * 3
+      },
+      { name: "Fours",
+        calc: (dices) => countNums(dices,6)[4] * 4
+      },
+      { name: "Fives",
+        calc: (dices) => countNums(dices,6)[5] * 5
+      },
+      { name: "Sixes",
+        calc: (dices) => countNums(dices,6)[6] * 6
+      },
+      { name: "Choice",
+        calc: (dices) => sum(dices)
+      },
+      { name: "4 of a Kind",
+        calc: (dices) => {
+          const counts = countNums(dices,6);
+          return counts.includes(4) || counts.includes(5) ? sum(dices) : 0}
+      },
+      { name: "Full House",
+        calc: (dices) => {
+          const counts = countNums(dices,6);
+          return counts.includes(3) && counts.includes(2) || counts.includes(5) ? sum(dices) : 0}
+      },
+      { name: "Small Straight",
+        calc: (dices) => countNums(dices,6).reduce((acc, cur) => cur > 0 || acc >= 4 ? acc+1 : 0, 0) >= 4 ? 15 : 0
+      },
+      { name: "Large Straight",
+        calc: (dices) => countNums(dices,6).reduce((acc, cur) => cur > 0 || acc >= 5 ? acc+1 : 0, 0) >= 5 ? 30 : 0
+      },
+      { name: "Yacht",
+        calc: (dices) => countNums(dices,6).includes(5) ? 50 : 0
+      },
+    ];
+  }
+  fillScore(idx) {
+    if (this.state.dices[0] === null) return;
+    if (this.state.scores[idx] !== null) return;
+    this.setState(({scores, turn}) => {
+      const newScores = scores.slice();
+      newScores[idx] = this.RULLS[idx].calc(this.state.dices);
+      return {
+        scores: newScores, 
+        turn: turn + 1, 
+        dices: Array(5).fill(null), 
+        rollCount: 0,
+        fixedStatus: Array(5).fill(false),
+      };
+    });
   }
   rollDice() {
-    console.log("asdf");
     if (this.state.rollCount >= 3) return;
-    const dices = this.state.dices.map((v, i) => 
-      this.state.fixedStatus[i] ? v : randInt(1, 6)
-    );
-    this.setState({
-      rollCount: this.state.rollCount + 1,
-      dices: dices,
+    this.setState(({dices, rollCount}) => {
+      const newDices = dices.map((v, i) => 
+        this.state.fixedStatus[i] ? v : randInt(1, 6)
+      );
+      return {dices: newDices, rollCount: rollCount + 1}
     });
   }
   fixDice(idx) {
     if (this.state.dices[idx] === null) return;
-    this.setState((prevState) => {
-      const fixedStatus = prevState.fixedStatus.map((fixed, i) => 
+    this.setState(({fixedStatus}) => {
+      const newFixedStatus = fixedStatus.map((fixed, i) => 
         idx === i ? !fixed : fixed
       );
-      return { fixedStatus };
+      return { fixedStatus: newFixedStatus };
     });
   }
   render() {
     return (
       <div className="game">
         <TurnIndicator turn={this.state.turn}/>
-        {/* <ScoreBoard diceValues={diceValues}/> */}
+        <ScoreSection 
+          scores={this.state.scores}
+          dices={this.state.dices}
+          rulls={this.RULLS}
+          fill={this.fillScore}
+        />
         <DiceSection 
           dices={this.state.dices} 
           roll={this.rollDice} 
@@ -89,17 +177,26 @@ class Game extends React.Component {
 function App() {
   return (
     <div className="App">
-      check render
       <Game/>
     </div>
   );
 }
 
 function randInt(min, max) {
-  return Math.floor(min + Math.random() * (max-min));
+  return Math.floor(min + Math.random() * (max-min+1));
 }
 function range(n) {
   return [...Array(n)].map((_,i) => i);
 }
-
+function sum(arr) {
+  return arr.reduce((acc, cur) => acc+cur, 0);
+}
+function countNums(arr, maxNum) {
+  const counts = Array(maxNum+1).fill(0);
+  arr.forEach(n=>{counts[n] += 1});
+  return counts
+}
+function max(arr) {
+  return arr.reduce((prevMax, cur) => cur > prevMax ? cur : prevMax, -Infinity);
+}
 export default App;

@@ -1,26 +1,58 @@
 .App {
-    margin: 0;
-    box-sizing: border-box;
-    text-align: center;
+  margin: 0;
+  box-sizing: border-box;
+  text-align: center;
 }
-.dices {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
+.score-section {
+  width: 600px;
+  margin: auto;
+
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(6, 80px);
+  grid-auto-columns: 1fr;
+  grid-gap: 5px;
+}
+.score-cell {
+  color: gray;
+  border: 1px solid black;
+  border-radius: 5px;
+  &.filled {
+    color: black;
+    background-color: lightgoldenrodyellow;
   }
-  .dice {
-    margin: 10px;
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    
-    line-height: 50px;
+  .name {
     font-size: 20px;
   }
-  .dice:hover {
+  .score {
+    font-size: 32px;
+  }
+}
+.dice-section {
+  padding: 10px;
+}
+.dices {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+}
+.dice {
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 5px;
+  
+  line-height: 50px;
+  font-size: 20px;
+  &:hover {
     border: 1px dotted black;
   }
-  .fixed {
+  &.fixed {
     background-color: lightgray;
   }
+}
+.roll-button {
+  padding: 10px;
+}
