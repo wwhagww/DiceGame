@@ -46,9 +46,27 @@ function ScoreCell(props) {
   return (
     <div className={className} onClick={props.fill}>
       <div className="name">{props.name}</div>
-      <div className="score">{props.score}</div>
+      <div className="score">{props.score}{props.children}</div>
     </div>
   );
+}
+
+function BonusCell(props) {
+  const subTotal = sum(props.scores);
+  return (<ScoreCell
+    name="+35 Bonus"
+    score={subTotal}
+    filled={subTotal >= 63}
+  > / 63</ScoreCell>);
+}
+
+function TotalCell(props) {
+  const total = sum(props.scores);
+  return (<ScoreCell
+    name="Total"
+    score={total}
+    filled={!props.scores.includes(null)}
+  />);
 }
 
 class ScoreSection extends React.Component {
@@ -70,6 +88,8 @@ class ScoreSection extends React.Component {
           />
         );
       })}
+      <BonusCell scores={this.props.scores.slice(0,6)}/>
+      <TotalCell scores={this.props.scores}/>
     </div>
   }
 }
@@ -221,21 +241,27 @@ function App() {
   );
 }
 
+// 계산 함수
 function randInt(min, max) {
   return Math.floor(min + Math.random() * (max-min+1));
 }
+
 function range(n) {
   return [...Array(n)].map((_,i) => i);
 }
+
 function sum(arr) {
-  return arr.reduce((acc, cur) => acc+cur, 0);
+  return arr.reduce((acc, cur) => cur !== null ? acc + cur : acc, 0);
 }
+
 function countNums(arr, maxNum) {
   const counts = Array(maxNum+1).fill(0);
   arr.forEach(n=>{counts[n] += 1});
   return counts
 }
+
 function max(arr) {
   return arr.reduce((prevMax, cur) => cur > prevMax ? cur : prevMax, -Infinity);
 }
+
 export default App;
