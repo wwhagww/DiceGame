@@ -61,11 +61,13 @@ function BonusCell(props) {
 }
 
 function TotalCell(props) {
-  const total = sum(props.scores);
+  const scores = props.scores;
+  const total = sum(scores);
+  const bonus = sum(scores.slice(0,6)) >= 63 ? 35 : 0;
   return (<ScoreCell
     name="Total"
-    score={total}
-    filled={!props.scores.includes(null)}
+    score={total + bonus}
+    filled={!scores.includes(null)}
   />);
 }
 
@@ -100,7 +102,6 @@ class Game extends React.Component {
     this.state = {
       scores: Array(12).fill(null),
       dices: Array(5).fill(null),
-      turn: 1,
       rollCount: 0,
       fixedStatus: Array(5).fill(false),
     };
@@ -175,7 +176,6 @@ class Game extends React.Component {
 
       return {
         scores: newScores, 
-        turn: turn + 1, 
         dices: Array(5).fill(null), 
         rollCount: 0,
         fixedStatus: Array(5).fill(false),
@@ -211,9 +211,10 @@ class Game extends React.Component {
   }
   
   render() {
+    const turn = this.state.scores.filter(score => score !== null).length + 1;
     return (
       <div className="game">
-        <TurnIndicator turn={this.state.turn}/>
+        <TurnIndicator turn={turn}/>
         <ScoreSection 
           scores={this.state.scores}
           dices={this.state.dices}
