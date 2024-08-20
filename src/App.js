@@ -42,7 +42,7 @@ function TurnIndicator(props) {
 }
 
 function ScoreCell(props) {
-  const className = `score-cell ${props.filled ? "filled" : ""}`;
+  const className = `score-cell ${props.className} ${props.filled ? "filled" : ""}`;
   return (
     <div className={className} onClick={props.fill}>
       <div className="name">{props.name}</div>
@@ -52,32 +52,31 @@ function ScoreCell(props) {
 }
 
 function BonusCell(props) {
-  const subTotal = sum(props.scores);
   return (<ScoreCell
     name="+35 Bonus"
-    score={subTotal}
-    filled={subTotal >= 63}
+    score={props.score}
+    filled={props.filled}
+    className="bonus-cell"
   > / 63</ScoreCell>);
 }
 
 function TotalCell(props) {
-  const scores = props.scores;
-  const total = sum(scores);
-  const bonus = sum(scores.slice(0,6)) >= 63 ? 35 : 0;
   return (<ScoreCell
     name="Total"
-    score={total + bonus}
-    filled={!scores.includes(null)}
-  />);
+    score={props.score}
+    filled={props.filled}
+    className="total-cell"
+    />);
 }
 
 class ScoreSection extends React.Component {
   render() {
+    const {scores, dices, RULLS} = this.props;
     return <div className="score-section">
-      {this.props.rulls.map(({name, calc}, idx) => {
-        const score = this.props.scores[idx] ??
-          (this.props.dices[0] !== null 
-            ? calc(this.props.dices) 
+      {RULLS.cells.map(({name, calc}, idx) => {
+        const score = scores[idx] ??
+          (dices[0] !== null 
+            ? calc(dices) 
             : ""
           );
         return (
@@ -86,12 +85,18 @@ class ScoreSection extends React.Component {
             name={name}
             score={score}
             fill={() => this.props.fill(idx)}
-            filled={this.props.scores[idx] !== null}
+            filled={scores[idx] !== null}
           />
         );
       })}
-      <BonusCell scores={this.props.scores.slice(0,6)}/>
-      <TotalCell scores={this.props.scores}/>
+      <BonusCell 
+        score={RULLS.calcSubTotal(scores)}
+        filled={RULLS.isBonus(scores)}
+      />
+      <TotalCell 
+        score={RULLS.calcTotalScore(scores)}
+        filled={!scores.includes(null)}
+      />
     </div>
   }
 }
@@ -110,69 +115,88 @@ class Game extends React.Component {
     this.fixDice = this.fixDice.bind(this);
     this.fillScore = this.fillScore.bind(this);
 
-    this.RULLS = [
-      {
-        name: "Ones",
-        calc: (dices) => countNums(dices,6)[1] * 1
-      },
-      {
-        name: "Twos",
-        calc: (dices) => countNums(dices,6)[2] * 2
-      },
-      {
-        name: "Threes",
-        calc: (dices) => countNums(dices,6)[3] * 3
-      },
-      {
-        name: "Fours",
-        calc: (dices) => countNums(dices,6)[4] * 4
-      },
-      {
-        name: "Fives",
-        calc: (dices) => countNums(dices,6)[5] * 5
-      },
-      {
-        name: "Sixes",
-        calc: (dices) => countNums(dices,6)[6] * 6
-      },
-      {
-        name: "Choice",
-        calc: (dices) => sum(dices)
-      },
-      {
-        name: "4 of a Kind",
-        calc: (dices) => {
-          const counts = countNums(dices,6);
-          return counts.includes(4) || counts.includes(5) ? sum(dices) : 0}
-      },
-      {
-        name: "Full House",
-        calc: (dices) => {
-          const counts = countNums(dices,6);
-          return counts.includes(3) && counts.includes(2) || counts.includes(5) ? sum(dices) : 0}
-      },
-      {
-        name: "Small Straight",
-        calc: (dices) => countNums(dices,6).reduce((acc, cur) => cur > 0 || acc >= 4 ? acc+1 : 0, 0) >= 4 ? 15 : 0
-      },
-      {
-        name: "Large Straight",
-        calc: (dices) => countNums(dices,6).reduce((acc, cur) => cur > 0 || acc >= 5 ? acc+1 : 0, 0) >= 5 ? 30 : 0
-      },
-      {
-        name: "Yacht",
-        calc: (dices) => countNums(dices,6).includes(5) ? 50 : 0
-      },
-    ];
+    this.RULLS = {
+      cells: [
+        {
+          name: "Ones",
+          calc: (dices) => countNums(dices,6)[1] * 1
+        },
+        {
+          name: "Twos",
+          calc: (dices) => countNums(dices,6)[2] * 2
+        },
+        {
+          name: "Threes",
+          calc: (dices) => countNums(dices,6)[3] * 3
+        },
+        {
+          name: "Fours",
+          calc: (dices) => countNums(dices,6)[4] * 4
+        },
+        {
+          name: "Fives",
+          calc: (dices) => countNums(dices,6)[5] * 5
+        },
+        {
+          name: "Sixes",
+          calc: (dices) => countNums(dices,6)[6] * 6
+        },
+        {
+          name: "Choice",
+          calc: (dices) => sum(dices)
+        },
+        {
+          name: "4 of a Kind",
+          calc: (dices) => {
+            const counts = countNums(dices,6);
+            return counts.includes(4) || counts.includes(5) ? sum(dices) : 0}
+        },
+        {
+          name: "Full House",
+          calc: (dices) => {
+            const counts = countNums(dices,6);
+            return counts.includes(3) && counts.includes(2) || counts.includes(5) ? sum(dices) : 0}
+        },
+        {
+          name: "Small Straight",
+          calc: (dices) => countNums(dices,6).reduce((acc, cur) => cur > 0 || acc >= 4 ? acc+1 : 0, 0) >= 4 ? 15 : 0
+        },
+        {
+          name: "Large Straight",
+          calc: (dices) => countNums(dices,6).reduce((acc, cur) => cur > 0 || acc >= 5 ? acc+1 : 0, 0) >= 5 ? 30 : 0
+        },
+        {
+          name: "Yacht",
+          calc: (dices) => countNums(dices,6).includes(5) ? 50 : 0
+        },
+      ],
+      calcSubTotal: scores => sum(scores.slice(0,6)),
+      isBonus: scores => this.RULLS.calcSubTotal(scores) >= 63,
+      calcTotalScore: scores => sum(scores) + (this.RULLS.isBonus(scores) ? 35 : 0),
+    };
   }
 
+  // 계산
+  getFinalComment(totalScore) {
+    if (totalScore >= 200) {
+      return "매우 실력이 좋네요 축하드립니다!";
+    } else if (totalScore >= 150) {
+      return "잘 했습니다! 다시 시도해보세요.";
+    } else if (totalScore >= 100) {
+      return "조금 아쉽네요. 전략을 다시 짜보세요.";
+    } else {
+      return "야야야 제대로 게임 안 해?";
+    }
+  }
+
+  // 액션
   fillScore(idx) {
     if (this.state.dices[0] === null) return;
     if (this.state.scores[idx] !== null) return;
 
-    this.setState(({scores, turn}) => {
+    this.setState(({scores}) => {
       const newScores = scores.slice();
-      newScores[idx] = this.RULLS[idx].calc(this.state.dices);
+      newScores[idx] = this.RULLS.cells[idx].calc(this.state.dices);
 
       return {
         scores: newScores, 
@@ -212,26 +236,33 @@ class Game extends React.Component {
   
   render() {
     const turn = this.state.scores.filter(score => score !== null).length + 1;
+    const isPlaying = this.state.scores.includes(null);
+    const totalScore = this.RULLS.calcTotalScore(this.state.scores);
     return (
       <div className="game">
-        <TurnIndicator turn={turn}/>
+        {isPlaying && <TurnIndicator turn={turn}/>}
         <ScoreSection 
           scores={this.state.scores}
           dices={this.state.dices}
-          rulls={this.RULLS}
+          RULLS={this.RULLS}
           fill={this.fillScore}
         />
-        <DiceSection 
+        {isPlaying && <DiceSection 
           dices={this.state.dices} 
           roll={this.rollDice} 
           fix={this.fixDice} 
           rollCount={this.state.rollCount}
           fixedStatus={this.state.fixedStatus}
-        />
+        />}
+        {!isPlaying && (
+          <div className="final-score">
+            <h2>최종 점수 : {totalScore}</h2>
+            <p>{this.getFinalComment(totalScore)}</p>
+          </div>
+        )}
       </div>
     );
   }
-  
 }
 
 function App() {

@@ -1,42 +1,60 @@
-.App {
-  margin: 0;
+* {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   text-align: center;
 }
+
+
 .score-section {
   width: 600px;
   margin: auto;
-
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(6, 80px);
-  grid-auto-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(7, 80px);
   grid-gap: 5px;
 }
+
 .score-cell {
   color: gray;
   border: 1px solid black;
   border-radius: 5px;
-  &.filled {
-    color: black;
-    background-color: lightgoldenrodyellow;
-  }
-  .name {
-    font-size: 20px;
-  }
-  .score {
-    font-size: 32px;
-  }
+  
 }
+.filled {
+  color: black;
+  background-color: lightgoldenrodyellow;
+}
+.name {
+  font-size: 20px;
+}
+.score {
+  font-size: 32px;
+}
+
+.bonus-cell {
+  grid-column: 1 / 2;
+  grid-row: 7 / 8;
+}
+.total-cell {
+  grid-column: 2 / 3;
+  grid-row: 7 / 8;
+}
+
+
 .dice-section {
-  padding: 10px;
+  font-size: 20px;
+  margin-top: 20px;
 }
+
 .dices {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
 }
+
 .dice {
   margin: 10px;
   width: 50px;
@@ -44,15 +62,28 @@
   border: 1px solid black;
   border-radius: 5px;
   
-  line-height: 50px;
-  font-size: 20px;
-  &:hover {
-    border: 1px dotted black;
-  }
-  &.fixed {
-    background-color: lightgray;
-  }
+  font-size: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
+.dice:hover {
+  border: 1px dotted black;
+}
+.fixed {
+  background-color: lightgray;
+}
+
 .roll-button {
-  padding: 10px;
+  font-size: 1em;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.roll-button:hover {
+  background-color: #ddd;
 }
