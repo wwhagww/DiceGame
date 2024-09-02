@@ -2,10 +2,14 @@
   "name": "dicegame",
   "version": "1.0.0",
   "main": "main.js",
+  "homepage": "https://wwhagww.github.io/DiceGame",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --open --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "postbuild": "rm -rf docs && mkdir docs && mv dist/* docs/",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d docs"
   },
   "keywords": [],
   "author": "",
