@@ -185,7 +185,7 @@ class Game extends React.Component {
     } else if (totalScore >= 100) {
       return "조금 아쉽네요. 전략을 다시 짜보세요.";
     } else {
-      return "야야야 제대로 게임 안 해?";
+      return "포기하지 마세요!";
     }
   }
 
