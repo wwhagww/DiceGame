@@ -6,6 +6,11 @@ UI를 컴포넌트로 분리하고, state를 적절히 사용하고, react에서
 
 최근 관심을 가지게 된 함수형 코딩을 연습하는 기회가 된다면 더 좋겠습니다.
 
+앞으로 구현할 것들
+- 반응형 레이아웃
+- 랭킹 등록 (localStorage 또는 database)
+- 재시작 기능
+
 **Page**
 
 https://wwhagww.github.io/DiceGame/
